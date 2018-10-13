@@ -1,4 +1,9 @@
 
+const UPPER_LIMIT = 50;
+const INFERIOR_LIMIT = 380;
+const LEFT_LIMIT = 0;
+const RIGHT_LIMIT = 400;
+
 class Component {
     constructor(x, y, sprite) {
       this.x = x;
@@ -31,8 +36,13 @@ class Enemy extends Component {
     // Você deve multiplicar qualquer movimento pelo parâmetro
     // dt, o que garantirá que o jogo rode na mesma velocidade
     // em qualquer computador.
-    //ctx.moveTo(this.x * dt, this.y * dt);
-        this.x = this.x + this.speed * dt;
+      this.x = this.x + this.speed * dt;
+      //bug width = 100px height = 80px
+      //player width = 80px height = 90
+      //verify collisions
+      if(this.player.x + 70> this.x && this.player.x < this.x + 100 && this.player.y + 85 > this.y && this.player.y < this.y + 60){
+        this.player.hasCollided = true;
+      }
     };
     
 };
@@ -45,13 +55,47 @@ class Enemy extends Component {
 class Player extends Component{
     constructor(x, y, sprite){
         super(x, y, sprite)
+        this.hasCollided = false;
     }
     update(){
-
+        if (this.hasCollided) {
+            this.x = 200;
+            this.y = 380;  
+            this.hasCollided = false; 
+        }
     }
         
-    handleInput(){
-
+    handleInput(value){
+        switch(value){
+          case('up'):
+            if (this.y >= UPPER_LIMIT) {
+                this.y = this.y - 84;  
+            } else{
+                this.y = -40;
+            }
+            break;
+          case('down'):
+            if (this.y < INFERIOR_LIMIT) {
+                this.y = this.y + 84;   
+            }else{
+                this.y = INFERIOR_LIMIT;
+            }
+            break;
+          case('left'):
+            if (this.x > LEFT_LIMIT) {
+                this.x = this.x - 100;
+            } else{
+                this.x = LEFT_LIMIT;
+            }
+            break;
+          case('right'):
+            if (this.x < RIGHT_LIMIT) {
+                this.x = this.x + 100;      
+            }else{
+                this.x = RIGHT_LIMIT
+            }
+            break;
+        }
     }
 };
 
@@ -61,7 +105,7 @@ class Player extends Component{
 // Coloque o objeto do jogador numa variável chamada jogador.
 const enemySpawnLineY = [60, 140, 220];
 var allEnemies = new Set();
-var player = new Player(200, 400, 'images/char-boy.png');
+var player = new Player(200, 380, 'images/char-boy.png');
 setInterval(addEnemies, 1500);
 
 //create 4 initial enemies so the screen will not begin empty
