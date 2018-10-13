@@ -29,7 +29,24 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+
+    var gameOver = doc.createElement("div");
+    gameOver.id = "game-over";
+    gameOver.innerHTML = '<h1>GAME OVER</h1><button onclick="playAgain()">PLAY AGAIN</button>';
+
+    var winner = doc.createElement("div");
+    winner.id = "winner";
+    winner.innerHTML = `<h1>YOU WIN!</h1><button onclick="playAgain()">PLAY AGAIN</button>`;
+
+    var myCanvas = doc.createElement("div");
+    myCanvas.id = "myCanvas";
+    myCanvas.appendChild(canvas);
+
+    doc.body.appendChild(gameOver);
+    doc.body.appendChild(winner);
+    doc.body.appendChild(myCanvas);
+
+    
 
     /* Esta função age como o ponto de largada do loop do jogo em si e
      * lida com as chamadas dos métodos render e update de forma adequada.
@@ -160,6 +177,10 @@ var Engine = (function(global) {
             enemy.render();
         });
 
+        allHearts.forEach(heart => {
+             heart.render();
+        });
+
         player.render();
     }
 
@@ -182,7 +203,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/heart.png'
     ]);
     Resources.onReady(init);
 

@@ -1,4 +1,3 @@
-
 const UPPER_LIMIT = 50;
 const INFERIOR_LIMIT = 380;
 const LEFT_LIMIT = 0;
@@ -64,6 +63,15 @@ class Player extends Component{
             this.hasCollided = false; 
         }
     }
+    render(){
+        super.render();
+        //draw lives
+      ctx.beginPath();
+      ctx.font = "16pt Arial";
+      ctx.fillStyle = "#0095DD";
+      ctx.fillText("Lives: ", 350, 30);
+      ctx.closePath();
+    }
         
     handleInput(value){
         switch(value){
@@ -72,6 +80,7 @@ class Player extends Component{
                 this.y = this.y - 84;  
             } else{
                 this.y = -40;
+                document.getElementById('winner').style.display = "block";
             }
             break;
           case('down'):
@@ -99,19 +108,35 @@ class Player extends Component{
     }
 };
 
+class Heart extends Component{
+    constructor(x, y, sprite){
+        super(x, y, sprite)
+    }
+};
+
 
 // Represente seus objetos como instâncias.
 // Coloque todos os objetos inimgos numa array allEnemies
 // Coloque o objeto do jogador numa variável chamada jogador.
+const enemySpawnLineX = [420, 450, 480];
 const enemySpawnLineY = [60, 140, 220];
 var allEnemies = new Set();
+var allHearts = new Set();
 var player = new Player(200, 380, 'images/char-boy.png');
+//var heart = new Heart(300, 0 , 'images/Heart.png');
+createInitialElements();
 setInterval(addEnemies, 1500);
 
 //create 4 initial enemies so the screen will not begin empty
-for(i = 0; i < 4; i++){
-    allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+function createInitialElements(){
+    for(i = 0; i < 3; i++){
+        allHearts.add(new Heart(enemySpawnLineX[i], 0, 'images/heart.png'));
+    }   
+    for(i = 0; i < 4; i++){
+        allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+    }
 }
+
 
 // Isto reconhece cliques em teclas e envia as chaves para seu
 // jogador. método handleInput(). Não é preciso mudar nada.
@@ -129,4 +154,11 @@ document.addEventListener('keyup', function(e) {
 //add elements to the screen
 function addEnemies() {
     allEnemies.add(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+}
+
+
+function playAgain() {
+    document.getElementById('winner').style.display = "none";
+    player.hasCollided = true;
+    player.update();
 }
