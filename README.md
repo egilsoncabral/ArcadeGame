@@ -1,6 +1,7 @@
-Arcade Game
+Arcade Game - Nanodegree Udacity
 ===============================
 
+This project, is part of the training Nanodegree of Udacity.
 In this game you have a Player, Enemies (Bugs). The goal of the player is to reach the water. 
 
 * The player can move left, right, up and down with the arrow keys. 
