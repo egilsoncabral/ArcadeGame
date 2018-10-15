@@ -41,26 +41,30 @@ class Enemy extends Component {
       //verify collisions
       if(this.player.x + 70> this.x && this.player.x < this.x + 100 && this.player.y + 85 > this.y && this.player.y < this.y + 60){
         this.player.hasCollided = true;
+        if (!this.player.stillHaveHearts()) {
+            gameOver();
+        }
       }
     };
     
 };
 
 
-
 // Agora, escreva sua própria classe de jogador
 // Esta classe exige um método update(), 
 // um render() e um handleInput().
 class Player extends Component{
-    constructor(x, y, sprite){
+    constructor(x, y, sprite, allHearts){
         super(x, y, sprite)
         this.hasCollided = false;
+        this.allHearts = allHearts;
     }
     update(){
         if (this.hasCollided) {
             this.x = 200;
             this.y = 380;  
-            this.hasCollided = false; 
+            this.hasCollided = false;
+            this.allHearts.splice(0,1); 
         }
     }
     render(){
@@ -71,6 +75,10 @@ class Player extends Component{
       ctx.fillStyle = "#0095DD";
       ctx.fillText("Lives: ", 350, 30);
       ctx.closePath();
+    }
+
+    stillHaveHearts() {
+        return this.allHearts.length > 1 ? true : false; 
     }
         
     handleInput(value){
@@ -112,8 +120,11 @@ class Heart extends Component{
     constructor(x, y, sprite){
         super(x, y, sprite)
     }
-};
 
+    update(){
+        super.render()
+    }
+};
 
 // Represente seus objetos como instâncias.
 // Coloque todos os objetos inimgos numa array allEnemies
@@ -121,20 +132,27 @@ class Heart extends Component{
 const enemySpawnLineX = [420, 450, 480];
 const enemySpawnLineY = [60, 140, 220];
 var allEnemies = new Set();
-var allHearts = new Set();
-var player = new Player(200, 380, 'images/char-boy.png');
-//var heart = new Heart(300, 0 , 'images/Heart.png');
+var allHearts = [];
+createHearts();
+
+var player = new Player(200, 380, 'images/char-boy.png', allHearts);
 createInitialElements();
+//var heart = new Heart(300, 0 , 'images/Heart.png');
+
 setInterval(addEnemies, 1500);
 
 //create 4 initial enemies so the screen will not begin empty
 function createInitialElements(){
-    for(i = 0; i < 3; i++){
-        allHearts.add(new Heart(enemySpawnLineX[i], 0, 'images/heart.png'));
-    }   
+      
     for(i = 0; i < 4; i++){
         allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
     }
+}
+
+function createHearts(){
+    for(i = 0; i < 3; i++){
+        allHearts.push(new Heart(enemySpawnLineX[i], 0, 'images/heart.png'));
+    } 
 }
 
 
@@ -159,6 +177,12 @@ function addEnemies() {
 
 function playAgain() {
     document.getElementById('winner').style.display = "none";
-    player.hasCollided = true;
-    player.update();
+    document.getElementById('game-over').style.display = "none";
+    player.x = 200;
+    player.y = 380;
+    createHearts();
+}
+
+function gameOver(){
+    document.getElementById('game-over').style.display = "block";
 }

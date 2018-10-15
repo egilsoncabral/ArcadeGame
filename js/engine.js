@@ -117,6 +117,9 @@ var Engine = (function(global) {
             if(enemy.x > 500)
                 allEnemies.delete(enemy);
         });
+        allHearts.forEach(function(heart) {
+            heart.update();
+        });
         player.update();
     }
 
